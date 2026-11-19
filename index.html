@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Skúškové otázky – tréning</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1122">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Skúška">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#4ade80; --green-d:#16a34a; --green-bg:#0f2a22; --green-t:#86efac;
+  --red:#f87171; --red-d:#dc2626; --red-bg:#2d1520; --red-t:#fca5a5;
+  --blue:#3b82f6; --blue-d:#1d4ed8; --blue-bg:#13254a;
+  --gold:#fbbf24; --ink:#e2e8f5; --mute:#8b9cc0; --line:#22324f; --bg:#0a1122; --card:#101b33; --soft:#0e1830;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{margin:0;min-height:100%}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 500px at 50% -180px,#16285a 0%,rgba(10,17,34,0) 70%)}
+button,label,.a,.lec,.mode{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.qtext,.a span:last-child,.expl p,.bq h4,.bq li,.bex{overflow-wrap:anywhere;-webkit-user-select:text;user-select:text}
+body{font-family:Nunito,system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--bg);-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:640px;margin:0 auto;
+  padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(210px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+#home.wrap,#end.wrap{padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+.hidden{display:none!important}
+
+/* buttons */
+.btn{border:0;border-radius:16px;padding:14px 20px;font-weight:800;font-size:16px;letter-spacing:.6px;text-transform:uppercase;
+  background:var(--blue);color:#fff;box-shadow:0 4px 0 var(--blue-d);transition:transform .05s,filter .1s;width:100%}
+.btn:active{transform:translateY(4px);box-shadow:none}
+.btn:disabled{background:#1a2742;color:#56688c;box-shadow:0 4px 0 #131e36;cursor:default}
+.btn.green{background:#22c55e;box-shadow:0 4px 0 var(--green-d);color:#06210f}
+.btn.red{background:#ef4444;box-shadow:0 4px 0 #991b1b}
+.btn.blue{background:var(--blue);box-shadow:0 4px 0 var(--blue-d)}
+.btn.ghost{background:var(--card);color:#93c5fd;border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+
+/* home */
+h1{font-size:28px;font-weight:900;margin:8px 0 4px}
+.sub{color:var(--mute);margin:0 0 20px;font-weight:600}
+.stats{display:flex;gap:10px;margin-bottom:20px}
+.stat{flex:1;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+.stat b{display:block;font-size:22px;font-weight:900}
+.stat span{font-size:13px;color:var(--mute);font-weight:700}
+.sec-t{font-weight:900;font-size:18px;margin:22px 0 10px}
+.lecs{display:grid;gap:10px}
+.lec{display:flex;align-items:center;gap:12px;border:2px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--card);text-align:left;
+  box-shadow:0 4px 0 var(--line);font-size:16px;font-weight:800;color:var(--ink)}
+.lec.on{border-color:var(--blue);background:var(--blue-bg);box-shadow:0 4px 0 var(--blue-d)}
+.lec .radio{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #3a4d74}
+.lec.on .radio{border:7px solid var(--blue);background:#fff}
+.lec .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:900;font-size:18px;flex:none}
+.lec .meta{flex:1}
+.lec small{display:block;color:var(--mute);font-weight:700;font-size:13px;margin-top:2px}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:8px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{border:2px solid var(--line);border-radius:16px;padding:14px;background:var(--card);text-align:left;box-shadow:0 4px 0 var(--line);color:var(--ink)}
+.mode b{display:block;font-size:16px;font-weight:900}
+.mode span{font-size:13px;color:var(--mute);font-weight:700}
+.mode:active,.lec:active{transform:translateY(4px);box-shadow:none}
+.mode:disabled{opacity:.45}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:700;padding:4px 2px}
+.sw{position:relative;width:52px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0}
+.sw i{position:absolute;inset:0;background:var(--line);border-radius:30px;transition:.2s}
+.sw i:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.sw input:checked+i{background:var(--blue)}
+.sw input:checked+i:before{transform:translateX(22px)}
+.reset{background:none;border:0;color:var(--mute);font-weight:700;text-decoration:underline;margin-top:18px;padding:0}
+
+/* quiz */
+.top{display:flex;align-items:center;gap:14px;margin:4px 0 22px}
+.x{background:none;border:0;font-size:26px;color:var(--mute);padding:0 4px;line-height:1}
+.prog{flex:1;height:16px;background:var(--line);border-radius:16px;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:16px;transition:width .35s;position:relative}
+.prog i:after{content:"";position:absolute;left:8px;right:8px;top:4px;height:4px;border-radius:4px;background:rgba(255,255,255,.35)}
+.streak{font-weight:900;color:#fb923c;min-width:44px;text-align:right}
+.card{border:2px solid var(--line);border-radius:20px;padding:18px 18px 20px;box-shadow:0 4px 0 var(--line);margin-bottom:18px;background:var(--card)}
+.tag{display:inline-flex;gap:6px;align-items:center;font-size:13px;font-weight:800;padding:4px 10px;border-radius:999px;color:#fff;margin-bottom:10px}
+.qtext{font-size:20px;font-weight:800;line-height:1.35}
+.hint{font-size:14px;color:var(--mute);font-weight:700;margin:0 0 10px 2px}
+.ans{display:flex;flex-direction:column;gap:10px}
+.a{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;border:2px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--card);
+  box-shadow:0 3px 0 var(--line);font-size:16px;font-weight:600;color:var(--ink);line-height:1.35}
+.a .bx{flex:none;width:24px;height:24px;border:2px solid #3a4d74;border-radius:7px;display:grid;place-items:center;margin-top:0;background:#0b1428;transition:background .12s,border-color .12s}
+.a .bx svg{width:16px;height:16px;opacity:0;transform:scale(.6);transition:opacity .12s,transform .12s}
+.a.sel .bx svg,.a.ok .bx svg,.a.bad .bx svg{opacity:1;transform:none}
+.a.sel{border-color:var(--blue);background:var(--blue-bg);box-shadow:0 3px 0 var(--blue-d)}
+.a.sel .bx{background:var(--blue);border-color:var(--blue);color:#fff}
+.a.ok{border-color:var(--green);background:var(--green-bg);box-shadow:0 3px 0 var(--green-d)}
+.a.ok .bx{background:#22c55e;border-color:#22c55e;color:#06210f}
+.a.bad{border-color:var(--red);background:var(--red-bg);box-shadow:0 3px 0 var(--red-d)}
+.a.bad .bx{background:#ef4444;border-color:#ef4444;color:#fff}
+.a.miss{border-color:var(--green);border-style:dashed;box-shadow:0 3px 0 var(--green-d)}
+.a.miss .bx{border-color:var(--green)}
+.a:disabled{cursor:default}
+.a:not(:disabled):active{transform:translateY(3px);box-shadow:none}
+
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:10;border-top:2px solid var(--line);background:#0c1528;
+  padding:14px calc(16px + env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+#quiz .top{position:sticky;top:0;z-index:5;background:var(--bg);margin:calc(-16px - env(safe-area-inset-top)) -16px 18px;padding:calc(12px + env(safe-area-inset-top)) 16px 10px}
+.foot.ok{background:var(--green-bg);border-color:transparent}
+.foot.bad{background:var(--red-bg);border-color:transparent}
+.foot-in{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.fb{display:flex;gap:12px;align-items:flex-start}
+.fb .em{width:44px;height:44px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:24px;font-weight:900;flex:none}
+.fb h3{margin:0;font-size:20px;font-weight:900}
+.fb p{margin:4px 0 0;font-weight:700;font-size:15px}
+.foot.ok h3,.foot.ok p{color:var(--green-t)} .foot.ok .em{color:var(--green)}
+.foot.bad h3,.foot.bad p{color:var(--red-t)} .foot.bad .em{color:var(--red)}
+.expl{scroll-margin-bottom:calc(200px + env(safe-area-inset-bottom));margin-top:16px;border-radius:16px;padding:14px 16px;background:#0f1d3d;border:2px solid #24407a}
+.expl.ok{border-color:#1f6f45}.expl.bad{border-color:#7a2a35}
+.expl-h{font-weight:900;font-size:15px;color:#93c5fd;margin-bottom:6px}
+.expl p{margin:0;font-weight:600;font-size:15px;line-height:1.5;color:var(--ink)}
+.bex{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#0f1d3d;font-size:14px;line-height:1.5;color:var(--ink);font-weight:600}
+
+/* end */
+.end{text-align:center;padding-top:30px}
+.end h2{font-size:30px;font-weight:900;color:var(--gold);margin:10px 0}
+.trophy{font-size:72px}
+.cards3{display:flex;gap:10px;margin:22px 0}
+.c3{flex:1;border:2px solid;border-radius:16px;overflow:hidden}
+.c3 .h{color:#fff;font-weight:900;font-size:12px;padding:4px;text-transform:uppercase;letter-spacing:.5px}
+.c3 b{display:block;padding:12px 6px;font-size:22px;font-weight:900}
+.wl{text-align:left;margin-top:16px}
+.wl div{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;font-weight:700;font-size:14px}
+.wl em{display:block;font-style:normal;color:var(--green-t);margin-top:4px;font-weight:700}
+
+/* browse */
+.bq{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.bq h4{margin:6px 0 8px;font-size:16px;font-weight:800;line-height:1.35}
+.bq li{font-weight:600;font-size:15px;margin:4px 0;color:var(--mute)}
+.bq li.c{color:var(--green-t);font-weight:800}
+.bq ol{margin:0;padding-left:22px;list-style:lower-alpha}
+.search{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;font-weight:700;-webkit-appearance:none;appearance:none;margin-bottom:14px;background:var(--soft);color:var(--ink);outline:none}
+.search:focus{border-color:var(--blue)}
+#browse .top{position:sticky;top:0;z-index:5;background:var(--bg);margin:calc(-16px - env(safe-area-inset-top)) -16px 8px;padding:calc(12px + env(safe-area-inset-top)) 16px 10px}
+@media (max-width:430px){
+  h1{font-size:25px}
+  .qtext{font-size:18px}
+  .card{padding:16px}
+  .a{font-size:15px;padding:12px}
+  .btn{padding:15px 16px}
+  .fb h3{font-size:18px}
+  .fb p{font-size:14px}
+  .stat b{font-size:20px}
+  .stat span{font-size:12px}
+  .c3 .h{font-size:10px}
+}
+@media (max-width:350px){ .modes{grid-template-columns:1fr} .stats{flex-wrap:wrap} }
+@media (hover:hover){ .a:not(:disabled):hover{border-color:#3a4d74} .lec:hover,.mode:not(:disabled):hover{border-color:#3a4d74} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important;scroll-behavior:auto!important} }
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shake .25s 2}
+@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:none}}
+.pop{animation:pop .25s}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="wrap">
+  <h1>Skúškové otázky</h1>
+  <p class="sub">Označ všetky správne odpovede.</p>
+  <div class="stats">
+    <div class="stat"><b id="sMaster">0</b><span>naučené</span></div>
+    <div class="stat"><b id="sAcc">–</b><span>úspešnosť</span></div>
+    <div class="stat"><b id="sBest">0</b><span>najlepšia séria</span></div>
+  </div>
+
+  <div class="sec-t">Téma</div>
+  <div class="lecs" id="lecs"></div>
+
+  <div class="sec-t">Režim</div>
+  <div class="modes">
+    <button class="mode" data-mode="seq"><b>Po poradí</b><span id="mSeqS">otázky jedna za druhou</span></button>
+    <button class="mode" data-mode="rand"><b>Náhodne</b><span>otázky v premiešanom poradí</span></button>
+    <button class="mode" data-mode="wrong" id="mWrong"><b>Moje chyby</b><span id="wrongCnt">0 otázok</span></button>
+    <button class="mode" data-mode="browse"><b>Prehľad</b><span>otázky so správnymi odpoveďami</span></button>
+  </div>
+
+  <div class="sec-t">Nastavenia</div>
+  <div class="opts">
+    <label class="tog">Nápoveda: počet správnych odpovedí<span class="sw"><input type="checkbox" id="optCount"><i></i></span></label>
+    <label class="tog">Zamiešať poradie možností<span class="sw"><input type="checkbox" id="optShuffle"><i></i></span></label>
+  </div>
+  <button class="reset" id="resetBtn">Vymazať pokrok</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="wrap hidden">
+  <div class="top">
+    <button class="x" id="quit" aria-label="Ukončiť">✕</button>
+    <div class="prog"><i id="progBar" style="width:0"></i></div>
+    <div class="streak" id="streak">🔥0</div>
+  </div>
+  <div class="card" id="card">
+    <div class="tag" id="qTag"></div>
+    <div class="qtext" id="qText"></div>
+  </div>
+  <p class="hint" id="qHint"></p>
+  <div class="ans" id="ans"></div>
+  <div class="expl hidden" id="expl"><div class="expl-h">💡 Prečo?</div><p id="explT"></p></div>
+</div>
+<div class="foot hidden" id="foot">
+  <div class="foot-in">
+    <div class="fb hidden" id="fb">
+      <div class="em" id="fbEm"></div>
+      <div><h3 id="fbH"></h3><p id="fbP"></p></div>
+    </div>
+    <button class="btn" id="mainBtn" disabled>Skontrolovať</button>
+  </div>
+</div>
+
+<!-- END -->
+<div id="end" class="wrap hidden">
+  <div class="end">
+    <div class="trophy">🏆</div>
+    <h2 id="endTitle">Hotovo!</h2>
+    <div class="cards3">
+      <div class="c3" style="border-color:var(--gold)"><div class="h" style="background:var(--gold)">Otázok</div><b id="eQ" style="color:#e5a800">0</b></div>
+      <div class="c3" style="border-color:var(--green)"><div class="h" style="background:var(--green)">Na prvý pokus</div><b id="eAcc" style="color:var(--green)">0%</b></div>
+      <div class="c3" style="border-color:var(--blue)"><div class="h" style="background:var(--blue)">Najlepšia séria</div><b id="eStr" style="color:var(--blue)">0</b></div>
+    </div>
+    <button class="btn" id="againBtn">Ďalšia lekcia</button>
+    <div style="height:12px"></div>
+    <button class="btn ghost" id="homeBtn">Domov</button>
+    <div class="wl" id="endWrong"></div>
+  </div>
+</div>
+
+<!-- BROWSE -->
+<div id="browse" class="wrap hidden">
+  <div class="top"><button class="x" id="bQuit" aria-label="Späť">✕</button><div style="font-weight:900;font-size:18px;flex:1">Všetky otázky</div></div>
+  <input class="search" id="bSearch" placeholder="Hľadať v otázkach…">
+  <div id="bList"></div>
+</div>
+
+<script>
+let Q = [];
+// Prednášky: pri novej prednáške pridaj riadok, napr. E:{name:'Názov', color:'#f43f5e'}
+const LECS = {
+  A:{name:'AI etika', color:'#ce82ff'},
+  B:{name:'Rozvoj osobnosti', color:'#ff9600'},
+  C:{name:'Osobný brand', color:'#1cb0f6'},
+  D:{name:'Investovanie', color:'#58cc02'}
+};
+const L = 'abcde';
+const $ = id => document.getElementById(id);
+
+/* ---------- storage (optional) ---------- */
+const KEY = 'skuska-quiz-v1';
+let S = {stats:{}, best:0, scope:'all', count:false, shuffle:false};
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+const st = id => S.stats[id] || (S.stats[id] = {r:0, w:0, box:0, last:null});
+const mastered = id => (S.stats[id]?.box || 0) >= 2;
+if (S.scope !== 'all' && !LECS[S.scope]) S.scope = 'all';
+const scopePool = () => Q.filter(q => S.scope === 'all' || q.lec === S.scope);
+
+/* ---------- home ---------- */
+function renderHome(){
+  const lecs = $('lecs'); lecs.innerHTML = '';
+  const items = [['all', {name:'Všetky prednášky', color:'linear-gradient(135deg,#3b82f6,#8b5cf6)'}], ...Object.entries(LECS)];
+  for (const [k, info] of items){
+    const qs = Q.filter(q => k === 'all' || q.lec === k), m = qs.filter(q => mastered(q.id)).length;
+    const b = document.createElement('button');
+    b.className = 'lec' + (S.scope === k ? ' on' : '');
+    b.innerHTML = `<div class="ic" style="background:${info.color}">${k === 'all' ? '★' : k}</div>
+      <div class="meta">${info.name}<small>${m} / ${qs.length} naučených</small>
+      <div class="bar"><i style="width:${m/qs.length*100}%"></i></div></div>
+      <span class="radio"></span>`;
+    b.onclick = () => { S.scope = k; save(); renderHome(); };
+    lecs.appendChild(b);
+  }
+  const pool = scopePool();
+  $('mSeqS').textContent = S.scope === 'all' ? 'A → B → C → D, jedna za druhou' : 'otázky jedna za druhou';
+  const wrong = pool.filter(q => S.stats[q.id]?.last === false);
+  $('wrongCnt').textContent = wrong.length + ' ' + plural(wrong.length);
+  $('mWrong').disabled = !wrong.length;
+  let r=0, w=0; for (const s of Object.values(S.stats)) { r += s.r; w += s.w; }
+  $('sMaster').textContent = Q.filter(q => mastered(q.id)).length;
+  $('sAcc').textContent = r + w ? Math.round(r/(r+w)*100) + '%' : '–';
+  $('sBest').textContent = S.best;
+  $('optCount').checked = S.count; $('optShuffle').checked = S.shuffle;
+}
+function plural(n){ return n===1?'otázka':(n>=2&&n<=4?'otázky':'otázok'); }
+$('optCount').onchange = e => { S.count = e.target.checked; save(); };
+$('optShuffle').onchange = e => { S.shuffle = e.target.checked; save(); };
+$('resetBtn').onclick = () => {
+  const b = $('resetBtn');
+  if (b.dataset.c) { S.stats = {}; S.best = 0; save(); renderHome(); b.textContent = 'Vymazať pokrok'; delete b.dataset.c; }
+  else { b.dataset.c = 1; b.textContent = 'Naozaj vymazať? Klikni ešte raz'; setTimeout(()=>{ if(b.dataset.c){delete b.dataset.c; b.textContent='Vymazať pokrok';} }, 3000); }
+};
+document.querySelectorAll('.mode').forEach(b => b.onclick = () => start(b.dataset.mode));
+
+/* ---------- quiz engine ---------- */
+let queue=[], cur=null, picked=new Set(), checked=false, total=0, done=0, streak=0, sessBest=0, firstTry={}, lastMode='seq', order=[];
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+
+function start(mode){
+  const pool = scopePool();
+  if (mode === 'browse') return openBrowse();
+  lastMode = mode;
+  let list;
+  if (mode === 'wrong') list = shuffle(pool.filter(q => S.stats[q.id]?.last === false));
+  else if (mode === 'rand') list = shuffle(pool);
+  else list = pool.slice(); // seq: Q is already sorted by lecture and number
+  if (!list.length) return;
+  queue = list; total = list.length; done = 0; streak = 0; sessBest = 0; firstTry = {};
+  show('quiz'); next();
+}
+
+function show(id){
+  for (const s of ['home','quiz','end','browse']) $(s).classList.toggle('hidden', s !== id);
+  $('foot').classList.toggle('hidden', id !== 'quiz');
+  window.scrollTo(0,0);
+}
+
+function next(){
+  if (!queue.length) return finish();
+  cur = queue.shift(); picked = new Set(); checked = false;
+  order = S.shuffle ? shuffle(cur.o.map((_,i)=>i)) : cur.o.map((_,i)=>i);
+  const lec = LECS[cur.lec];
+  $('qTag').style.background = lec.color;
+  $('qTag').textContent = `${cur.lec} · ${lec.name} · №${cur.n}`;
+  $('qText').textContent = cur.q;
+  $('qHint').textContent = S.count
+    ? (cur.c.length === 1 ? 'Správna je jedna odpoveď' : `Počet správnych odpovedí: ${cur.c.length}`)
+    : 'Označ všetky správne odpovede';
+  const box = $('ans'); box.innerHTML = '';
+  order.forEach((oi, pos) => {
+    const b = document.createElement('button');
+    b.className = 'a'; b.dataset.i = oi;
+    b.innerHTML = `<span class="bx"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span></span>`;
+    b.setAttribute('role','checkbox');
+    b.lastChild.textContent = cur.o[oi];
+    b.onclick = () => toggle(oi);
+    box.appendChild(b);
+  });
+  $('foot').className = 'foot'; $('fb').classList.add('hidden'); $('expl').classList.add('hidden');
+  const m = $('mainBtn'); m.className = 'btn'; m.textContent = 'Skontrolovať'; m.disabled = true;
+  $('card').classList.remove('pop'); void $('card').offsetWidth; $('card').classList.add('pop');
+  $('progBar').style.width = (done/total*100) + '%';
+  $('streak').textContent = '🔥' + streak;
+}
+
+function toggle(oi){
+  if (checked) return;
+  picked.has(oi) ? picked.delete(oi) : picked.add(oi);
+  document.querySelectorAll('.a').forEach(b => { const on = picked.has(+b.dataset.i); b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+  $('mainBtn').disabled = !picked.size;
+}
+
+function check(){
+  checked = true;
+  const corr = new Set(cur.c);
+  const ok = picked.size === corr.size && [...picked].every(i => corr.has(i));
+  document.querySelectorAll('.a').forEach(b => {
+    const i = +b.dataset.i; b.disabled = true; b.classList.remove('sel');
+    if (corr.has(i) && picked.has(i)) b.classList.add('ok');
+    else if (picked.has(i)) b.classList.add('bad');
+    else if (corr.has(i)) b.classList.add('miss');
+  });
+  const s = st(cur.id);
+  const first = !(cur.id in firstTry);
+  if (first) firstTry[cur.id] = ok;
+  if (ok){ s.r++; s.box = Math.min((s.box||0)+1, 3); s.last = true; streak++; sessBest = Math.max(sessBest, streak); S.best = Math.max(S.best, streak); done++; }
+  else { s.w++; s.box = 0; s.last = false; streak = 0; queue.push(cur); $('ans').classList.remove('shake'); void $('ans').offsetWidth; $('ans').classList.add('shake'); }
+  save();
+  $('foot').className = 'foot ' + (ok ? 'ok' : 'bad');
+  $('fb').classList.remove('hidden');
+  $('fbEm').textContent = ok ? '✓' : '✕';
+  $('fbH').textContent = ok ? pick(['Výborne!','Správne!','Super!','Len tak ďalej!']) : 'Nesprávne';
+  $('fbP').textContent = ok ? (streak >= 3 ? `Séria ${streak} 🔥` : '') : 'Správne sú orámované zelenou. Otázka sa vráti na konci.';
+  $('explT').textContent = cur.ex || '';
+  $('expl').classList.toggle('hidden', !cur.ex);
+  $('expl').className = 'expl ' + (ok ? 'ok' : 'bad') + (cur.ex ? '' : ' hidden');
+  setTimeout(() => $('expl').scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
+  const m = $('mainBtn'); m.disabled = false; m.textContent = 'Pokračovať'; m.className = 'btn' + (ok ? ' green' : ' red');
+  $('progBar').style.width = (done/total*100) + '%';
+  $('streak').textContent = '🔥' + streak;
+}
+const pick = a => a[Math.random()*a.length|0];
+
+$('mainBtn').onclick = () => checked ? next() : check();
+$('quit').onclick = () => { show('home'); renderHome(); };
+
+function finish(){
+  const ids = Object.keys(firstTry), good = ids.filter(i => firstTry[i]).length;
+  $('eQ').textContent = total;
+  $('eAcc').textContent = Math.round(good/total*100) + '%';
+  $('eStr').textContent = sessBest;
+  $('endTitle').textContent = good === total ? 'Bez chyby!' : 'Hotovo!';
+  const wr = Q.filter(q => firstTry[q.id] === false);
+  $('endWrong').innerHTML = wr.length ? '<div class="sec-t">Chyby v tomto kole</div>' : '';
+  for (const q of wr){
+    const d = document.createElement('div');
+    d.textContent = q.q;
+    const e = document.createElement('em');
+    e.textContent = '✓ ' + q.c.map(i => q.o[i]).join(' · ');
+    d.appendChild(e); $('endWrong').appendChild(d);
+  }
+  $('againBtn').textContent = lastMode === 'wrong' ? 'Znova chyby' : 'Znova od začiatku';
+  show('end');
+}
+$('againBtn').onclick = () => { renderHome(); start(lastMode === 'wrong' && !scopePool().some(q => S.stats[q.id]?.last === false) ? 'rand' : lastMode); };
+$('homeBtn').onclick = () => { show('home'); renderHome(); };
+
+/* ---------- browse ---------- */
+function openBrowse(){ show('browse'); $('bSearch').value = ''; renderBrowse(); }
+function renderBrowse(){
+  const t = $('bSearch').value.trim().toLowerCase();
+  const list = $('bList'); list.innerHTML = '';
+  for (const q of Q){
+    if (S.scope !== 'all' && q.lec !== S.scope) continue;
+    if (t && !(q.q + ' ' + q.o.join(' ')).toLowerCase().includes(t)) continue;
+    const d = document.createElement('div'); d.className = 'bq';
+    const tag = document.createElement('span'); tag.className = 'tag'; tag.style.background = LECS[q.lec].color;
+    tag.textContent = `${q.lec} · ${LECS[q.lec].name} · №${q.n}`;
+    const h = document.createElement('h4'); h.textContent = q.q;
+    const ol = document.createElement('ol');
+    q.o.forEach((o,i) => { const li = document.createElement('li'); li.textContent = o + (q.c.includes(i) ? '  ✓' : ''); if (q.c.includes(i)) li.className = 'c'; ol.appendChild(li); });
+    d.append(tag, h, ol);
+    if (q.ex){ const n = document.createElement('p'); n.className = 'bex'; n.textContent = '💡 ' + q.ex; d.appendChild(n); }
+    list.appendChild(d);
+  }
+  if (!list.children.length) list.innerHTML = '<p class="sub">Nič sa nenašlo</p>';
+}
+$('bSearch').oninput = renderBrowse;
+$('bQuit').onclick = () => { show('home'); renderHome(); };
+
+/* ---------- keyboard ---------- */
+document.addEventListener('keydown', e => {
+  if ($('quiz').classList.contains('hidden')) return;
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= order.length && !checked) toggle(order[n-1]);
+  if (e.key === 'Enter' && !$('mainBtn').disabled) { e.preventDefault(); $('mainBtn').click(); }
+});
+
+document.addEventListener('touchstart', () => {}, {passive:true});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+fetch('questions.json', {cache: 'no-cache'})
+  .then(r => r.json())
+  .then(data => { data.forEach(q => { if (!LECS[q.lec]) LECS[q.lec] = {name:'Prednáška ' + q.lec, color:'#64748b'}; });
+    Q = data.sort((a,b) => a.lec.localeCompare(b.lec) || a.n - b.n); renderHome(); })
+  .catch(() => { document.querySelector('.sub').textContent = 'Nepodarilo sa načítať questions.json'; });
+</script>
+</body>
+</html>
