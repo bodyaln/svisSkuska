@@ -104,6 +104,9 @@ h1{font-size:28px;font-weight:900;margin:8px 0 4px}
 .a.bad .bx{background:#ef4444;border-color:#ef4444;color:#fff}
 .a.miss{border-color:var(--green);border-style:dashed;box-shadow:0 3px 0 var(--green-d)}
 .a.miss .bx{border-color:var(--green)}
+.a .at{flex:1}
+.a .ol{display:none;flex:none;font-size:13px;font-weight:800;color:var(--mute);margin-left:4px}
+.ans.done .a .ol{display:inline}
 .a:disabled{cursor:default}
 .a:not(:disabled):active{transform:translateY(3px);box-shadow:none}
 
@@ -193,7 +196,6 @@ h1{font-size:28px;font-weight:900;margin:8px 0 4px}
   <div class="sec-t">Nastavenia</div>
   <div class="opts">
     <label class="tog">Nápoveda: počet správnych odpovedí<span class="sw"><input type="checkbox" id="optCount"><i></i></span></label>
-    <label class="tog">Zamiešať poradie možností<span class="sw"><input type="checkbox" id="optShuffle"><i></i></span></label>
   </div>
   <button class="reset" id="resetBtn">Vymazať pokrok</button>
 </div>
@@ -261,7 +263,7 @@ const $ = id => document.getElementById(id);
 
 /* ---------- storage (optional) ---------- */
 const KEY = 'skuska-quiz-v1';
-let S = {stats:{}, best:0, scope:'all', count:false, shuffle:false};
+let S = {stats:{}, best:0, scope:'all', count:false};
 try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch(e) {}
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
 const st = id => S.stats[id] || (S.stats[id] = {r:0, w:0, box:0, last:null});
@@ -293,11 +295,10 @@ function renderHome(){
   $('sMaster').textContent = Q.filter(q => mastered(q.id)).length;
   $('sAcc').textContent = r + w ? Math.round(r/(r+w)*100) + '%' : '–';
   $('sBest').textContent = S.best;
-  $('optCount').checked = S.count; $('optShuffle').checked = S.shuffle;
+  $('optCount').checked = S.count;
 }
 function plural(n){ return n===1?'otázka':(n>=2&&n<=4?'otázky':'otázok'); }
 $('optCount').onchange = e => { S.count = e.target.checked; save(); };
-$('optShuffle').onchange = e => { S.shuffle = e.target.checked; save(); };
 $('resetBtn').onclick = () => {
   const b = $('resetBtn');
   if (b.dataset.c) { S.stats = {}; S.best = 0; save(); renderHome(); b.textContent = 'Vymazať pokrok'; delete b.dataset.c; }
@@ -308,6 +309,24 @@ document.querySelectorAll('.mode').forEach(b => b.onclick = () => start(b.datase
 /* ---------- quiz engine ---------- */
 let queue=[], cur=null, picked=new Set(), checked=false, total=0, done=0, streak=0, sessBest=0, firstTry={}, lastMode='seq', order=[];
 const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+
+// Možnosti typu „všetky uvedené“ ostávajú na konci, ostatné sa zakaždým zamiešajú inak
+const PINNED = /^(všetky|vsetky|žiadna|ziadna|ani jedna|nič z)( uvedené| uvedene| z uvedených| z uvedenych)?\b/i;
+const lastOrder = {};
+function shuffleOptions(q){
+  const idx = q.o.map((_,i) => i);
+  const pinned = idx.filter(i => PINNED.test(q.o[i].trim()));
+  const free = idx.filter(i => !pinned.includes(i));
+  const prev = lastOrder[q.id], same = (a,b) => a && b && a.join() === b.join();
+  let res;
+  for (let k = 0; k < 20; k++) {
+    res = shuffle(free).concat(pinned);
+    if (free.length < 2) break;
+    if (!same(res, idx) && !same(res, prev)) break;
+  }
+  lastOrder[q.id] = res;
+  return res;
+}
 
 function start(mode){
   const pool = scopePool();
@@ -331,7 +350,7 @@ function show(id){
 function next(){
   if (!queue.length) return finish();
   cur = queue.shift(); picked = new Set(); checked = false;
-  order = S.shuffle ? shuffle(cur.o.map((_,i)=>i)) : cur.o.map((_,i)=>i);
+  order = shuffleOptions(cur);
   const lec = LECS[cur.lec];
   $('qTag').style.background = lec.color;
   $('qTag').textContent = `${cur.lec} · ${lec.name} · №${cur.n}`;
@@ -339,13 +358,13 @@ function next(){
   $('qHint').textContent = S.count
     ? (cur.c.length === 1 ? 'Správna je jedna odpoveď' : `Počet správnych odpovedí: ${cur.c.length}`)
     : 'Označ všetky správne odpovede';
-  const box = $('ans'); box.innerHTML = '';
+  const box = $('ans'); box.innerHTML = ''; box.classList.remove('done');
   order.forEach((oi, pos) => {
     const b = document.createElement('button');
     b.className = 'a'; b.dataset.i = oi;
-    b.innerHTML = `<span class="bx"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span></span>`;
+    b.innerHTML = `<span class="bx"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span class="at"></span><span class="ol">${L[oi]})</span>`;
     b.setAttribute('role','checkbox');
-    b.lastChild.textContent = cur.o[oi];
+    b.querySelector('.at').textContent = cur.o[oi];
     b.onclick = () => toggle(oi);
     box.appendChild(b);
   });
@@ -364,6 +383,7 @@ function toggle(oi){
 }
 
 function check(){
+  $('ans').classList.add('done');
   checked = true;
   const corr = new Set(cur.c);
   const ok = picked.size === corr.size && [...picked].every(i => corr.has(i));
