@@ -30,7 +30,8 @@ button,label,.a,.lec,.mode{touch-action:manipulation;-webkit-user-select:none;us
 body{font-family:Nunito,system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--bg);-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 button{font-family:inherit;cursor:pointer}
 .wrap{max-width:640px;margin:0 auto;
-  padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(210px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+  padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+#quiz.wrap{padding-bottom:calc(var(--foot-h, 180px) + 10px)}
 #home.wrap,#end.wrap{padding-bottom:calc(40px + env(safe-area-inset-bottom))}
 .hidden{display:none!important}
 
@@ -122,7 +123,7 @@ h1{font-size:28px;font-weight:900;margin:8px 0 4px}
 .fb p{margin:4px 0 0;font-weight:700;font-size:15px}
 .foot.ok h3,.foot.ok p{color:var(--green-t)} .foot.ok .em{color:var(--green)}
 .foot.bad h3,.foot.bad p{color:var(--red-t)} .foot.bad .em{color:var(--red)}
-.expl{scroll-margin-bottom:calc(200px + env(safe-area-inset-bottom));margin-top:16px;border-radius:16px;padding:14px 16px;background:#0f1d3d;border:2px solid #24407a}
+.expl{scroll-margin-bottom:calc(var(--foot-h, 180px) + 10px);margin-top:16px;border-radius:16px;padding:14px 16px;background:#0f1d3d;border:2px solid #24407a}
 .expl.ok{border-color:#1f6f45}.expl.bad{border-color:#7a2a35}
 .expl-h{font-weight:900;font-size:15px;color:#93c5fd;margin-bottom:6px}
 .expl p{margin:0;font-weight:600;font-size:15px;line-height:1.5;color:var(--ink)}
@@ -150,16 +151,67 @@ h1{font-size:28px;font-weight:900;margin:8px 0 4px}
 .search:focus{border-color:var(--blue)}
 #browse .top{position:sticky;top:0;z-index:5;background:var(--bg);margin:calc(-16px - env(safe-area-inset-top)) -16px 8px;padding:calc(12px + env(safe-area-inset-top)) 16px 10px}
 @media (max-width:430px){
-  h1{font-size:25px}
-  .qtext{font-size:18px}
-  .card{padding:16px}
-  .a{font-size:15px;padding:12px}
-  .btn{padding:15px 16px}
-  .fb h3{font-size:18px}
-  .fb p{font-size:14px}
-  .stat b{font-size:20px}
-  .stat span{font-size:12px}
+  .wrap{padding-left:calc(12px + env(safe-area-inset-left));padding-right:calc(12px + env(safe-area-inset-right));padding-top:calc(10px + env(safe-area-inset-top))}
+  /* home */
+  h1{font-size:22px;margin:2px 0 2px}
+  .sub{font-size:13px;margin-bottom:10px}
+  .stats{gap:6px;margin-bottom:6px}
+  .stat{padding:6px 4px;border-radius:12px}
+  .stat b{font-size:17px}
+  .stat span{font-size:11px}
+  .sec-t{font-size:15px;margin:12px 0 6px}
+  .lecs{gap:6px}
+  .lec{padding:7px 10px;gap:10px;border-radius:12px;font-size:14px;box-shadow:0 3px 0 var(--line)}
+  .lec.on{box-shadow:0 3px 0 var(--blue-d)}
+  .lec .ic{width:30px;height:30px;border-radius:9px;font-size:14px}
+  .lec small{font-size:11px;margin-top:0}
+  .bar{height:4px;margin-top:4px}
+  .lec .radio{width:18px;height:18px}
+  .lec.on .radio{border-width:6px}
+  .modes{gap:6px}
+  .mode{padding:9px 10px;border-radius:12px;box-shadow:0 3px 0 var(--line)}
+  .mode b{font-size:14px}
+  .mode span{font-size:11px}
+  .opts{gap:2px;margin-top:2px}
+  .tog{font-size:13px;padding:2px}
+  .sw{width:44px;height:26px}
+  .sw i:before{width:20px;height:20px}
+  .sw input:checked+i:before{transform:translateX(18px)}
+  .reset{margin-top:8px;font-size:13px}
+  /* quiz */
+  #quiz .top{margin:calc(-10px - env(safe-area-inset-top)) -12px 8px;padding:calc(8px + env(safe-area-inset-top)) 12px 6px;gap:10px}
+  .x{font-size:22px}
+  .prog{height:12px}
+  .card{padding:10px 12px 12px;border-radius:14px;margin-bottom:8px;box-shadow:0 3px 0 var(--line)}
+  .tag{font-size:11px;padding:2px 8px;margin-bottom:6px}
+  .qtext{font-size:16px;line-height:1.3}
+  .hint{font-size:12px;margin:0 0 6px 2px}
+  .ans{gap:6px}
+  .a{font-size:14px;line-height:1.28;padding:8px 10px;gap:9px;border-radius:12px}
+  .a .bx{width:20px;height:20px;border-radius:6px}
+  .a .bx svg{width:13px;height:13px}
+  .expl{margin-top:8px;padding:9px 11px;border-radius:12px}
+  .expl-h{font-size:13px;margin-bottom:3px}
+  .expl p{font-size:13px;line-height:1.38}
+  .foot{padding-top:9px;padding-bottom:calc(9px + env(safe-area-inset-bottom))}
+  .foot-in{gap:8px}
+  .fb{gap:9px;align-items:center}
+  .fb .em{width:32px;height:32px;font-size:17px}
+  .fb h3{font-size:16px}
+  .fb p{font-size:12px;margin-top:1px}
+  .btn{padding:11px 14px;font-size:15px;border-radius:13px}
+  /* end + browse */
+  .end{padding-top:6px}
+  .trophy{font-size:52px}
+  .end h2{font-size:24px;margin:4px 0}
+  .cards3{margin:12px 0}
   .c3 .h{font-size:10px}
+  .c3 b{font-size:19px;padding:8px 4px}
+  #browse .top{margin:calc(-10px - env(safe-area-inset-top)) -12px 6px;padding:calc(8px + env(safe-area-inset-top)) 12px 6px}
+  .bq{padding:10px 12px;margin-bottom:8px}
+  .bq h4{font-size:14px}
+  .bq li{font-size:13px}
+  .bex{font-size:12.5px;padding:8px 10px}
 }
 @media (max-width:350px){ .modes{grid-template-columns:1fr} .stats{flex-wrap:wrap} }
 @media (hover:hover){ .a:not(:disabled):hover{border-color:#3a4d74} .lec:hover,.mode:not(:disabled):hover{border-color:#3a4d74} }
@@ -403,7 +455,7 @@ function check(){
   $('fb').classList.remove('hidden');
   $('fbEm').textContent = ok ? '✓' : '✕';
   $('fbH').textContent = ok ? pick(['Výborne!','Správne!','Super!','Len tak ďalej!']) : 'Nesprávne';
-  $('fbP').textContent = ok ? (streak >= 3 ? `Séria ${streak} 🔥` : '') : 'Správne sú orámované zelenou. Otázka sa vráti na konci.';
+  $('fbP').textContent = ok ? (streak >= 3 ? `Séria ${streak} 🔥` : '') : 'Správne sú orámované zelenou.';
   $('explT').textContent = cur.ex || '';
   $('expl').classList.toggle('hidden', !cur.ex);
   $('expl').className = 'expl ' + (ok ? 'ok' : 'bad') + (cur.ex ? '' : ' hidden');
@@ -470,6 +522,9 @@ document.addEventListener('keydown', e => {
 });
 
 document.addEventListener('touchstart', () => {}, {passive:true});
+// výška spodného panelu -> padding pod obsahom, aby nič nezakrýval a nevznikal zbytočný scroll
+const setFootH = () => document.documentElement.style.setProperty('--foot-h', $('foot').offsetHeight + 'px');
+if ('ResizeObserver' in window) new ResizeObserver(setFootH).observe($('foot')); else addEventListener('resize', setFootH);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 fetch('questions.json', {cache: 'no-cache'})
   .then(r => r.json())
