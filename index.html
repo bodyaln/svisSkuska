@@ -303,12 +303,13 @@ h1{font-size:28px;font-weight:900;margin:8px 0 4px}
 
 <script>
 let Q = [];
-// Prednášky: pri novej prednáške pridaj riadok, napr. E:{name:'Názov', color:'#f43f5e'}
+// Prednášky: pri novej prednáške pridaj riadok, napr. F:{name:'Názov', color:'#14b8a6'}
 const LECS = {
   A:{name:'AI etika', color:'#ce82ff'},
   B:{name:'Rozvoj osobnosti', color:'#ff9600'},
   C:{name:'Osobný brand', color:'#1cb0f6'},
-  D:{name:'Investovanie', color:'#58cc02'}
+  D:{name:'Investovanie', color:'#58cc02'},
+  E:{name:'Payments', color:'#f43f5e'}
 };
 const L = 'abcde';
 const $ = id => document.getElementById(id);
@@ -339,7 +340,7 @@ function renderHome(){
     lecs.appendChild(b);
   }
   const pool = scopePool();
-  $('mSeqS').textContent = S.scope === 'all' ? 'A → B → C → D, jedna za druhou' : 'otázky jedna za druhou';
+  $('mSeqS').textContent = S.scope === 'all' ? 'A → E, jedna za druhou' : 'otázky jedna za druhou';
   const wrong = pool.filter(q => S.stats[q.id]?.last === false);
   $('wrongCnt').textContent = wrong.length + ' ' + plural(wrong.length);
   $('mWrong').disabled = !wrong.length;

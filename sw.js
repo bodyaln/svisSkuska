@@ -1,5 +1,5 @@
 // Pri zmene súborov zvýš verziu, aby sa cache obnovila
-const CACHE = 'skuska-v3';
+const CACHE = 'skuska-v4';
 const FILES = ['./', './index.html', './questions.json', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
